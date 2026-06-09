@@ -38,6 +38,11 @@ public partial class MainWindow : Window
 
     private void Navigate_Checked(object sender, RoutedEventArgs e)
     {
+        if (OverviewView is null || ConsoleView is null || TreeView is null || ImagesView is null || VirusView is null || SettingsView is null)
+        {
+            return;
+        }
+
         if (sender is not System.Windows.Controls.RadioButton radio || radio.Tag is not string target)
         {
             return;
