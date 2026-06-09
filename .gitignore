@@ -1,0 +1,35 @@
+# Build output
+bin/
+obj/
+publish/
+*.user
+*.suo
+*.cache
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Forensic evidence and generated output
+*.raw
+*.vmem
+*.mem
+*.dmp
+*.dump
+*.lime
+*.hpak
+*.core
+denia_out/
+case_out/
+carved/
+cache/
+manifest.csv
+manifest.json
+
+# Local secrets
+.env
+.env.*
+denia-settings.json
+*_api_key*
+secrets.*

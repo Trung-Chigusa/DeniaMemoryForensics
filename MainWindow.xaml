@@ -1,0 +1,311 @@
+<Window x:Class="DeniaMemoryForensics.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Denia Memory Forensics"
+        Width="1440"
+        Height="900"
+        MinWidth="1180"
+        MinHeight="760"
+        Background="#0D1117"
+        AllowDrop="True"
+        Drop="Window_Drop"
+        DragOver="Window_DragOver">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#0B0F15" BorderBrush="#202936" BorderThickness="0,0,1,0" Padding="22">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="DENIA" FontSize="30" FontWeight="Bold" />
+                    <TextBlock Text="Memory Forensics" Style="{StaticResource MutedText}" Margin="1,2,0,0" />
+                </StackPanel>
+
+                <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,22,0,18" Padding="14">
+                    <StackPanel>
+                        <TextBlock Text="Case Dump" FontWeight="SemiBold" />
+                        <TextBlock x:Name="SidebarDumpText" Text="No dump selected" Style="{StaticResource MutedText}" Margin="0,7,0,12" TextTrimming="CharacterEllipsis" />
+                        <Button Content="Select Dump" Style="{StaticResource AccentButton}" Click="SelectDump_Click" />
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Row="2">
+                    <RadioButton Content="Overview" Tag="Overview" Style="{StaticResource NavButton}" IsChecked="True" Checked="Navigate_Checked" />
+                    <RadioButton Content="Battle Console" Tag="Console" Style="{StaticResource NavButton}" Checked="Navigate_Checked" />
+                    <RadioButton Content="File Tree" Tag="Tree" Style="{StaticResource NavButton}" Checked="Navigate_Checked" />
+                    <RadioButton Content="Image Dump" Tag="Images" Style="{StaticResource NavButton}" Checked="Navigate_Checked" />
+                    <RadioButton Content="VirusTotal" Tag="Virus" Style="{StaticResource NavButton}" Checked="Navigate_Checked" />
+                    <RadioButton Content="Settings" Tag="Settings" Style="{StaticResource NavButton}" Checked="Navigate_Checked" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3">
+                    <TextBlock Text="Status" FontWeight="SemiBold" />
+                    <TextBlock x:Name="StatusText" Text="Ready" Style="{StaticResource MutedText}" Margin="0,6,0,10" />
+                    <Button x:Name="CancelButton" Content="Cancel Running Task" Style="{StaticResource DangerButton}" Click="Cancel_Click" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="26">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Denia Memory Forensics" FontSize="28" FontWeight="SemiBold" />
+                        <TextBlock Text="Native Windows dashboard for triage, carving, Volatility automation, and hash reputation checks." Style="{StaticResource MutedText}" Margin="0,4,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="Open Output" Click="OpenOutput_Click" Margin="0,0,8,0" />
+                        <Button Content="Engine Status" Click="RunStatus_Click" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <ScrollViewer x:Name="OverviewView" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Overview" Style="{StaticResource SectionTitle}" />
+                        <Border BorderBrush="#344154" BorderThickness="1" CornerRadius="8" Background="#111720" Padding="26" Margin="0,0,0,16" MinHeight="170" Drop="Window_Drop" DragOver="Window_DragOver">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="Drop a memory dump here" FontSize="24" HorizontalAlignment="Center" />
+                                <TextBlock Text="RAW, VMEM, DMP, LIME, HPAK and related memory images" Style="{StaticResource MutedText}" HorizontalAlignment="Center" Margin="0,6,0,16" />
+                                <Button Content="Select Memory Dump" Style="{StaticResource AccentButton}" Width="190" Click="SelectDump_Click" />
+                            </StackPanel>
+                        </Border>
+
+                        <UniformGrid Columns="3">
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Text="Dump" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="DashboardDumpText" Text="Not selected" Style="{StaticResource MutedText}" Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Text="Engine" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="DashboardEngineText" Text="Not configured" Style="{StaticResource MutedText}" Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Text="Output" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="DashboardOutputText" Text="denia_out" Style="{StaticResource MutedText}" Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <Border Style="{StaticResource Card}" Margin="0,4,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Quick Actions" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,12" />
+                                <WrapPanel>
+                                    <Button Content="Info" Click="QuickInfo_Click" Margin="0,0,8,8" />
+                                    <Button Content="Processes" Click="QuickProcesses_Click" Margin="0,0,8,8" />
+                                    <Button Content="Tree" Click="QuickTree_Click" Margin="0,0,8,8" />
+                                    <Button Content="Native Image Carve" Style="{StaticResource AccentButton}" Click="NativeCarve_Click" Margin="0,0,8,8" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Grid x:Name="ConsoleView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Battle Console" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="CommandBox" IsEditable="True" Text="info --limit 20" Margin="0,0,10,0">
+                                    <ComboBoxItem Content="info --limit 20" />
+                                    <ComboBoxItem Content="ps --limit 80" />
+                                    <ComboBoxItem Content="pstree --limit 120" />
+                                    <ComboBoxItem Content="tree --source filescan --filter Users --limit 500 --depth 0" />
+                                    <ComboBoxItem Content="dump-images --mode both --limit 0 --validate" />
+                                    <ComboBoxItem Content="triage" />
+                                </ComboBox>
+                                <Button Grid.Column="1" Content="Run" Style="{StaticResource AccentButton}" Click="RunCommand_Click" Margin="0,0,8,0" />
+                                <Button Grid.Column="2" Content="Clear" Click="ClearConsole_Click" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    <TextBox x:Name="ConsoleOutputBox" Grid.Row="1" FontFamily="Cascadia Mono, Consolas" FontSize="13" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+                </Grid>
+
+                <Grid x:Name="TreeView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="File Tree" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="TreeSourceBox" SelectedIndex="0" Margin="0,0,10,0">
+                                    <ComboBoxItem Content="filescan" />
+                                    <ComboBoxItem Content="mft" />
+                                </ComboBox>
+                                <TextBox x:Name="TreeFilterBox" Grid.Column="1" Text="Users, AppData, Windows" Margin="0,0,10,0" />
+                                <TextBox x:Name="TreeLimitBox" Grid.Column="2" Text="500" Margin="0,0,10,0" />
+                                <TextBox x:Name="TreeDepthBox" Grid.Column="3" Text="0" Margin="0,0,10,0" />
+                                <Button Grid.Column="4" Content="Render" Style="{StaticResource AccentButton}" Click="RenderTree_Click" Margin="0,0,8,0" />
+                                <Button Grid.Column="5" Content="Save" Click="SaveTree_Click" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    <TextBox x:Name="TreeOutputBox" Grid.Row="1" FontFamily="Cascadia Mono, Consolas" FontSize="13" AcceptsReturn="True" IsReadOnly="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+                </Grid>
+
+                <Grid x:Name="ImagesView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Image Dump" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="ImageOutputNameBox" Text="images_auto" Margin="0,0,10,10" />
+                                <TextBox x:Name="ImageExtensionsBox" Grid.Column="1" Text="jpg,png,gif,bmp,ico,webp,tif,tiff" Margin="0,0,10,10" />
+                                <TextBox x:Name="ImageMinBox" Grid.Column="2" Text="256" Margin="0,0,10,10" />
+                                <TextBox x:Name="ImageMaxBox" Grid.Column="3" Text="32M" Margin="0,0,10,10" />
+                                <TextBox x:Name="ImageLimitBox" Grid.Column="4" Text="0" Margin="0,0,10,10" />
+                                <CheckBox x:Name="ImageValidateBox" Grid.Column="5" Content="Validate" IsChecked="True" Margin="0,0,0,10" />
+                                <Button Grid.Row="1" Content="Native Carve" Style="{StaticResource AccentButton}" Click="NativeCarve_Click" Margin="0,0,10,0" />
+                                <Button Grid.Row="1" Grid.Column="1" Content="Volatility DumpFiles" Click="VolDumpImages_Click" Margin="0,0,10,0" />
+                                <Button Grid.Row="1" Grid.Column="2" Content="Open Folder" Click="OpenImagesFolder_Click" Margin="0,0,10,0" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    <TextBox x:Name="ImageOutputBox" Grid.Row="1" FontFamily="Cascadia Mono, Consolas" FontSize="13" AcceptsReturn="True" IsReadOnly="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+                </Grid>
+
+                <Grid x:Name="VirusView" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="VirusTotal Hash Reputation" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <PasswordBox x:Name="VirusApiKeyBox" Margin="0,0,10,10" />
+                                <Button Grid.Column="1" Content="Get Key" Click="GetVirusKey_Click" Margin="0,0,8,10" />
+                                <Button Grid.Column="2" Content="Save Key" Click="SaveVirusKey_Click" Margin="0,0,8,10" />
+                                <TextBox x:Name="VirusLimitBox" Grid.Column="3" Text="200" Margin="0,0,8,10" />
+                                <CheckBox x:Name="VirusExecutableOnlyBox" Grid.Column="4" Content="Executables only" IsChecked="True" Margin="0,0,0,10" />
+
+                                <TextBox x:Name="VirusTargetBox" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0" />
+                                <Button Grid.Row="1" Grid.Column="1" Content="File" Click="BrowseVirusFile_Click" Margin="0,0,8,0" />
+                                <Button Grid.Row="1" Grid.Column="2" Content="Folder" Click="BrowseVirusFolder_Click" Margin="0,0,8,0" />
+                                <Button Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Content="Check Hashes" Style="{StaticResource AccentButton}" Click="CheckVirus_Click" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    <ListView x:Name="VirusResultsList" Grid.Row="1" Background="#111720" BorderBrush="#303948" Foreground="{StaticResource InkBrush}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Verdict" DisplayMemberBinding="{Binding Verdict}" Width="100" />
+                                <GridViewColumn Header="Mal" DisplayMemberBinding="{Binding Malicious}" Width="60" />
+                                <GridViewColumn Header="Susp" DisplayMemberBinding="{Binding Suspicious}" Width="60" />
+                                <GridViewColumn Header="SHA256" DisplayMemberBinding="{Binding Sha256}" Width="260" />
+                                <GridViewColumn Header="File" DisplayMemberBinding="{Binding Path}" Width="620" />
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="320" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+
+                <ScrollViewer x:Name="SettingsView" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Settings" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Volatility/Battle Engine" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="EnginePathBox" />
+                                    <Button Grid.Column="1" Content="Browse" Click="BrowseEngine_Click" Margin="10,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Output Root" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="OutputRootBox" />
+                                    <Button Grid.Column="1" Content="Browse" Click="BrowseOutputRoot_Click" Margin="10,0,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        <WrapPanel>
+                            <Button Content="Auto Detect Engine" Click="AutoDetectEngine_Click" Margin="0,0,8,8" />
+                            <Button Content="Save Settings" Style="{StaticResource AccentButton}" Click="SaveSettings_Click" Margin="0,0,8,8" />
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
