@@ -30,14 +30,22 @@ public sealed class VolatilityRunner
         return _runner.RunAsync(enginePath, args, onOutput, cancellationToken);
     }
 
-    public Task RunStatusAsync(string enginePath, Action<string>? onOutput, CancellationToken cancellationToken)
+    public Task RunStatusAsync(string enginePath, string dumpPath, Action<string>? onOutput, CancellationToken cancellationToken)
     {
         if (!IsConfigured(enginePath))
         {
             throw new InvalidOperationException("Volatility/Battle engine is not configured.");
         }
 
-        return _runner.RunAsync(enginePath, new[] { "--cli", "status" }, onOutput, cancellationToken);
+        var args = new List<string> { "--cli", "--quiet" };
+        if (!string.IsNullOrWhiteSpace(dumpPath) && File.Exists(dumpPath))
+        {
+            args.Add("-f");
+            args.Add(dumpPath);
+        }
+
+        args.Add("status");
+        return _runner.RunAsync(enginePath, args, onOutput, cancellationToken);
     }
 
     private static IEnumerable<string> SplitCommandLine(string commandLine)

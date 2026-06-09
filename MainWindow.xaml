@@ -139,14 +139,7 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <ComboBox x:Name="CommandBox" IsEditable="True" Text="info --limit 20" Margin="0,0,10,0">
-                                    <ComboBoxItem Content="info --limit 20" />
-                                    <ComboBoxItem Content="ps --limit 80" />
-                                    <ComboBoxItem Content="pstree --limit 120" />
-                                    <ComboBoxItem Content="tree --source filescan --filter Users --limit 500 --depth 0" />
-                                    <ComboBoxItem Content="dump-images --mode both --limit 0 --validate" />
-                                    <ComboBoxItem Content="triage" />
-                                </ComboBox>
+                                <TextBox x:Name="CommandBox" Text="info --limit 20" Margin="0,0,10,0" FontFamily="Cascadia Mono, Consolas" />
                                 <Button Grid.Column="1" Content="Run" Style="{StaticResource AccentButton}" Click="RunCommand_Click" Margin="0,0,8,0" />
                                 <Button Grid.Column="2" Content="Clear" Click="ClearConsole_Click" />
                             </Grid>

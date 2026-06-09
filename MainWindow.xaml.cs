@@ -97,7 +97,9 @@ public partial class MainWindow : Window
         await RunOperationAsync("Checking engine status", async token =>
         {
             ConsoleOutputBox.Clear();
-            await _volatility.RunStatusAsync(EnginePathBox.Text.Trim(), AppendConsole, token);
+            AppendConsole($"> engine status");
+            AppendConsole($"Dump: {(_settings.LastDumpPath.Length == 0 ? "(not selected)" : _settings.LastDumpPath)}");
+            await _volatility.RunStatusAsync(EnginePathBox.Text.Trim(), _settings.LastDumpPath, AppendConsole, token);
         });
     }
 
@@ -124,6 +126,9 @@ public partial class MainWindow : Window
         {
             ConsoleOutputBox.Clear();
             AppendConsole($"> {command}");
+            AppendConsole($"Engine: {EnginePathBox.Text.Trim()}");
+            AppendConsole($"Dump: {_settings.LastDumpPath}");
+            AppendConsole("");
             await _volatility.RunBattleCommandAsync(EnginePathBox.Text.Trim(), _settings.LastDumpPath, command, AppendConsole, token);
         });
     }
